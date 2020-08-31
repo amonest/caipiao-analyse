@@ -1,6 +1,6 @@
 ### 彩票分析
 
-![c1](https://github.com/amonest/caipiao-analyse/blob/master/c1.png?raw=true)
+![c1](c1.png)
 
 ![c2](https://github.com/amonest/caipiao-analyse/blob/master/c2.png?raw=true)
 

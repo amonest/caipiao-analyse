@@ -1,0 +1,940 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/tooltipster/3.3.0/css/themes/tooltipster-light.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div id="header">
+        <table cellpadding="0" cellspacing="0" border="0" align="center" width="100%">
+            <tr>
+              <td width="100%" align="center">
+                <ul class="switch-page-list">
+                    <li><a class="switch-page-button active" target-page="settings-page">参数设置</a></li>
+                    <li><a class="switch-page-button" target-page="dayview-page">单日分析</a></li>
+                    <li><a class="switch-page-button" target-page="summary-page">汇总分析</a></li>
+                    <li><a class="switch-page-button" target-page="continuous-page">连式统计</a></li>
+                </ul>
+              </td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="settings-page" class="page-content">
+        <div class="box input-box" id="setttings-input">
+          <table cellpadding="0" cellspacing="0" border="0" align="center">
+            <tr>
+              <td>
+                <div class="box-title">参数设置</div>
+              </td>
+              <td align="right">
+                <div class="box-title">
+                    <a onclick="window.external.WriteSettingsToFile()">保存</a>
+                    &nbsp;&nbsp;
+                    <a onclick="window.external.ReadSettingsFromFile()">读取</a>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td valign="top">
+                <div class="block">
+                    <div class="line"><span class="head">定式珠路</span></div>
+                    <div class="line">连式次数：<input type="text" id="dingshi_continuous_count" value="3" data-item="true" />&nbsp;次</div>
+                    <div class="line">
+                        投注号码：<select data-item="true" id="dingshi_bet_number">
+                            <option value="same" selected>自己</option>
+                            <option value="inverse">对面</option>
+                        </select>
+                    </div><div class="line">启用让式：<input type="text" id="dingshi_skip_times" value="0" data-item="true" />&nbsp;次</div>
+                </div>
+
+                <div class="block">
+                    <div class="line"><span class="head">交叉珠路</span></div>
+                    <div class="line">连式次数：<input type="text" id="jiaocha_continuous_count" value="3" data-item="true" />&nbsp;次</div>
+                    <div class="line">
+                        投注号码：<select id="jiaocha_bet_number" data-item="true">
+                            <option value="same" selected>自己</option>
+                            <option value="inverse">对面</option>
+                        </select>
+                    </div>
+                    <div class="line">启用让式：<input type="text" id="jiaocha_skip_times" value="0" data-item="true" />&nbsp;次</div>
+                </div>
+
+                <div class="block">
+                    <div class="line"><span class="head">追跟上一式</span></div>
+                    <div class="line">连式次数：<input type="text" id="zhuigen_continuous_count" value="2" data-item="true" />&nbsp;次</div>
+                    <div class="line">启用让式：<input type="text" id="zhuigen_skip_times" value="2" data-item="true" />&nbsp;次</div>
+                </div>
+
+                <div class="block">
+                    <div class="line"><span class="head">资金计划</span></div>
+                    <div class="line">
+                        投注模式：<select id="money_plan_mode" data-item="true">
+                            <option value="lost" selected>追输</option>
+                            <option value="win">追赢</option>
+                        </select>
+                    </div>
+                    <div class="line">投注赔率：<input type="text" id="money_plan_factor" value="1.0" data-item="true" /></div>
+                    <div class="line">投注金额：<input type="text" id="money_plan_values" value="2,4" style="width:200px;" data-item="true" /></div>
+                </div>
+              </td>
+
+              <td valign="top">
+                <div class="block">
+                    <div class="line">
+                        <label class="head">
+                            <input type="checkbox" id="global_limit_enable" value="1" checked="checked" data-item="true" />
+                            全局止盈止损
+                        </label>
+                    </div>
+                    <div class="line">止盈金额：<input type="text" id="global_limit_profit" value="0" data-item="true" />(填0表示不限制)</div>
+                    <div class="line">止损金额：<input type="text" id="global_limit_decifit" value="50" data-item="true" />(填0表示不限制)</div>
+                </div>
+
+                <div class="block">
+                    <div class="line">
+                        <label class="head">
+                            <input type="checkbox" id="single_limit_money_enable" value="1" data-item="true" />
+                            单个号码金额止盈止损
+                        </label>
+                    </div>
+                    <div class="line">止盈金额：<input type="text" id="single_limit_profit_money" value="0" data-item="true" />(填0表示不限制)</div>
+                    <div class="line">止损金额：<input type="text" id="single_limit_decifit_money" value="8" data-item="true" />(填0表示不限制)</div>
+                </div>
+
+                <div class="block">
+                    <div class="line">
+                        <label class="head">
+                            <input type="checkbox" id="single_limit_times_enable" value="1" checked="checked" data-item="true" />
+                            单个号码资金计划运行次数止盈止损 - 未处理
+                        </label>
+                    </div>
+                    <div class="line">止盈次数：<input type="text" id="single_limit_profit_times" value="0" data-item="true" />(填0表示不限制)</div>
+                    <div class="line">止损次数：<input type="text" id="single_limit_decifit_times" value="2" data-item="true" />(填0表示不限制)</div>
+                </div>
+
+                <div class="block">
+                    <div class="line">
+                        <label class="head">
+                            <input type="checkbox" id="segment_reset_enable" value="1" data-item="true" />
+                            分段重置 - 未处理
+                        </label>
+                    </div>
+                    <div class="line">重置上限金额：<input type="text" id="segment_reset_profit" value="100" data-item="true" />(填0表示不限制)</div>
+                    <div class="line">重置下限金额：<input type="text" id="segment_reset_decifit" value="100" data-item="true" />(填0表示不限制)</div>
+                    <div class="line">当段总赢金额：<input type="text" value="100" data-item="true" />(填0表示不限制)</div>
+                    <div class="line">超过当段总赢金额百分比时重置：<input type="text" value="0.8" data-item="true" />(填0表示不限制)</div>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div><!-- /#settings-input -->
+
+    </div><!-- /#settings-page -->
+
+    <div id="dayview-page" class="page-content">
+        <div class="box input-box" id="dayview-input">
+          <table cellpadding="0" cellspacing="0" border="0" align="center">
+            <tr>
+              <td colspan="2">
+                <div class="box-title">单日分析</div>
+                <input type="hidden" id="last_number_type" value="" data-item="true" />
+              </td>
+            </tr>
+            <tr>
+              <td valign="top">
+                <div class="block">
+                    <div class="line">
+                        彩票种类：<select id="dayview_input_lottery_type" data-item="true" play-prefix="dayview_input_play_">
+                            <option value="cqssc">重庆时时彩</option>
+                            <option value="xjssc">新疆时时彩</option>
+                        </select>
+                    </div>
+
+                    <div class="line">查询日期：<input type="text" id="dayview_input_analysis_date" value="2018-03-21" class="bootstrap-datepicker" data-item="true" /></div>
+
+                    <div class="line">
+                      <input type="button" value="开始分析" onclick="window.external.GenerateDayviewReport();" />
+                    </div>
+                </div>
+              </td>
+              <td valign="top">
+                <div class="block">
+                    <div class="line">
+                        测试方法：<select id="dayview_input_test_method" data-item="true">
+                            <option value="zhuigen">追跟上一式</option>
+                            <option value="dingshi">定式珠路</option>
+                            <option value="jiaocha">交叉珠路</option>
+                        </select>
+                    </div>
+
+                    <div class="line">
+                        彩票玩法：
+                        <label>
+                            <input type="checkbox" value="1" id="dayview_input_play_danshuang" data-item="true" />
+                            单双
+                        </label>
+                        &nbsp;&nbsp;
+                        <label>
+                            <input type="checkbox" value="1" id="dayview_input_play_daxiao" checked="checked" data-item="true" />
+                            大小
+                        </label>
+                        &nbsp;&nbsp;
+                        <label>
+                            <input type="checkbox" value="1" id="dayview_input_play_zhds" data-item="true" />
+                            总和单双
+                        </label>
+                        &nbsp;&nbsp;
+                        <label>
+                            <input type="checkbox" value="1" id="dayview_input_play_zhdx" data-item="true" />
+                            总和大小
+                        </label>
+                        &nbsp;&nbsp;
+                        <label>
+                            <input type="checkbox" value="1" id="dayview_input_play_longhu" data-item="true" />
+                            龙虎
+                        </label>
+                    </div>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div><!-- /#dayview-input -->
+
+        <div class="box result-box" id="dayview-result">
+          <table cellpadding="0" cellspacing="0" border="0" align="center">
+            <thead>
+              <tr>
+                <th style="width: 180px" rowspan="2">时间</th>
+                <th rowspan="2">
+                    <a class="head-link switch-number-button active" number-type="haoma">显示号码</a>
+                    &nbsp;&nbsp;
+                    <a class="head-link switch-number-button" number-type="daxiao">显示大小</a>
+                    &nbsp;&nbsp;
+                    <a class="head-link switch-number-button" number-type="danshuang">显示单双</a>
+                </th>
+                <th colspan="6">单双</th>
+                <th colspan="6">大小</th>
+                <th rowspan="2" style="width: 120px">小计</th>
+              </tr>
+              <tr>
+                <!-- 大小 -->
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>盈/损</th>
+
+                <!-- 单双 -->
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>盈/损</th>
+              </tr>
+            </thead>
+            <tbody id="results-body">
+              <tr>
+                <td>
+                  20180321-001&nbsp;&nbsp;13:24
+                </td>
+
+                <td>
+                    <div class="numbers kaijiang haoma show">
+                        <span class="digit">1</span>
+                        <span class="digit">2</span>
+                        <span class="digit">3</span>
+                        <span class="digit">4</span>
+                        <span class="digit">5</span>
+                    </div>
+                    <div class="numbers kaijiang daxiao hidden">
+                        <span class="xiao">小</span>
+                        <span class="xiao">小</span>
+                        <span class="xiao">小</span>
+                        <span class="da">大</span>
+                        <span class="da">大</span>
+                    </div>
+                    <div class="numbers kaijiang danshuang hidden">
+                        <span class="dan">单</span>
+                        <span class="shuang">双</span>
+                        <span class="dan">单</span>
+                        <span class="shuang">双</span>
+                        <span class="dan">单</span>
+                    </div>
+                </td>
+
+                <!-- 大小 -->
+                <td class="play-daxiao numbers">
+                    <span class="da deficit tooltipster" title="xxxxxxxxxxx">大</span>
+                </td>
+                <td class="play-daxiao numbers">
+                    <span class="none warning">&nbsp;</span>
+                </td>
+                <td class="play-daxiao numbers">
+                    <span class="da deficit">大</span>
+                </td>
+                <td class="play-daxiao numbers">
+                    <span class="da deficit">大</span>
+                </td>
+                <td class="play-daxiao numbers">
+                    <span class="xiao deficit">小</span>
+                </td>
+                <td class="play-daxiao money">
+                    <span class="deficit">-20</span>
+                </td>
+
+                <!-- 单双 -->
+                <td class="play-danshuang numbers">
+                    <span class="dan profit">单</span>
+                </td>
+                <td class="play-danshuang numbers">
+                    <span class="dan profit">单</span>
+                </td>
+                <td class="play-danshuang numbers">
+                    <span class="shuang profit">双</span>
+                </td>
+                <td class="play-danshuang numbers">
+                    <span class="none">&nbsp;</span>
+                </td>
+                <td class="play-danshuang numbers">
+                    <span class="dan profit">单</span>
+                </td>
+                <td class="play-danshuang money">
+                    <span class="profit">20</span>
+                </td>
+
+                <td class="day-subtotal">
+                    <span class="profit">20</span>
+                </td>
+              </tr>
+              <tr class="segment-reset-record">
+                <td>
+                  20180321-001&nbsp;&nbsp;13:24
+                </td>
+
+                <td>
+                    <div class="numbers kaijiang haoma show">
+                        <span class="digit">1</span>
+                        <span class="digit">2</span>
+                        <span class="digit">3</span>
+                        <span class="digit">4</span>
+                        <span class="digit">5</span>
+                    </div>
+                    <div class="numbers kaijiang daxiao hidden">
+                        <span class="xiao">小</span>
+                        <span class="xiao">小</span>
+                        <span class="xiao">小</span>
+                        <span class="da">大</span>
+                        <span class="da">大</span>
+                    </div>
+                    <div class="numbers kaijiang danshuang hidden">
+                        <span class="dan">单</span>
+                        <span class="shuang">双</span>
+                        <span class="dan">单</span>
+                        <span class="shuang">双</span>
+                        <span class="dan">单</span>
+                    </div>
+                </td>
+
+                <!-- 大小 -->
+                <td class="play-daxiao numbers">
+                    <span class="da deficit tooltipster" title="xxxxxxxxxxx">大</span>
+                </td>
+                <td class="play-daxiao numbers">
+                    <span class="none warning">&nbsp;</span>
+                </td>
+                <td class="play-daxiao numbers">
+                    <span class="da deficit">大</span>
+                </td>
+                <td class="play-daxiao numbers">
+                    <span class="da deficit">大</span>
+                </td>
+                <td class="play-daxiao numbers">
+                    <span class="xiao deficit">小</span>
+                </td>
+                <td class="play-daxiao money">
+                    <span class="deficit">-20</span>
+                </td>
+
+                <!-- 单双 -->
+                <td class="play-danshuang numbers">
+                    <span class="dan profit">单</span>
+                </td>
+                <td class="play-danshuang numbers">
+                    <span class="dan profit">单</span>
+                </td>
+                <td class="play-danshuang numbers">
+                    <span class="shuang profit">双</span>
+                </td>
+                <td class="play-danshuang numbers">
+                    <span class="none">&nbsp;</span>
+                </td>
+                <td class="play-danshuang numbers">
+                    <span class="dan profit">单</span>
+                </td>
+                <td class="play-danshuang money">
+                    <span class="profit">20</span>
+                </td>
+
+                <td class="day-subtotal">
+                    <span class="profit">20</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  20180321-001&nbsp;&nbsp;13:24
+                </td>
+
+                <td>
+                    <div class="numbers kaijiang haoma show">
+                        <span class="digit">1</span>
+                        <span class="digit">2</span>
+                        <span class="digit">3</span>
+                        <span class="digit">4</span>
+                        <span class="digit">5</span>
+                    </div>
+                    <div class="numbers kaijiang daxiao hidden">
+                        <span class="xiao">小</span>
+                        <span class="xiao">小</span>
+                        <span class="xiao">小</span>
+                        <span class="da">大</span>
+                        <span class="da">大</span>
+                    </div>
+                    <div class="numbers kaijiang danshuang hidden">
+                        <span class="dan">单</span>
+                        <span class="shuang">双</span>
+                        <span class="dan">单</span>
+                        <span class="shuang">双</span>
+                        <span class="dan">单</span>
+                    </div>
+                </td>
+
+                <!-- 大小 -->
+                <td class="play-daxiao numbers">
+                    <span class="da deficit tooltipster" title="xxxxxxxxxxx">大</span>
+                </td>
+                <td class="play-daxiao numbers">
+                    <span class="none warning">&nbsp;</span>
+                </td>
+                <td class="play-daxiao numbers">
+                    <span class="da deficit">大</span>
+                </td>
+                <td class="play-daxiao numbers">
+                    <span class="da deficit">大</span>
+                </td>
+                <td class="play-daxiao numbers">
+                    <span class="xiao deficit">小</span>
+                </td>
+                <td class="play-daxiao money">
+                    <span class="deficit">-20</span>
+                </td>
+
+                <!-- 单双 -->
+                <td class="play-danshuang numbers">
+                    <span class="dan profit">单</span>
+                </td>
+                <td class="play-danshuang numbers">
+                    <span class="dan profit">单</span>
+                </td>
+                <td class="play-danshuang numbers">
+                    <span class="shuang profit">双</span>
+                </td>
+                <td class="play-danshuang numbers">
+                    <span class="none">&nbsp;</span>
+                </td>
+                <td class="play-danshuang numbers">
+                    <span class="dan profit">单</span>
+                </td>
+                <td class="play-danshuang money">
+                    <span class="profit">20</span>
+                </td>
+
+                <td class="day-subtotal">
+                    <span class="profit">20</span>
+                </td>
+              </tr>
+            </tbody>
+
+            <tfoot>
+              <tr>
+                <td>合计</td>
+
+                <td>&nbsp;</td>
+
+                <!-- 大小 -->
+                <td colspan="5">&nbsp;</td>
+                <td class="money">
+                    <span class="deficit">-20</span>
+                </td>
+
+                <!-- 单双 -->
+                <td colspan="5">&nbsp;</td>
+                <td class="money">
+                    <span class="profit">20</span>
+                </td>
+
+                <td class="money">
+                    <span class="profit">20</span>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div><!-- /#dayview-result -->
+    </div><!-- /#dayview-page -->
+
+    <div id="summary-page" class="page-content">
+        <div class="box input-box" id="summary-input">
+          <table cellpadding="0" cellspacing="0" border="0" align="center">
+            <tr>
+              <td colspan="2">
+                <div class="box-title">汇总分析</div>
+              </td>
+            </tr>
+            <tr>
+              <td valign="top">
+                <div class="block">
+                    <div class="line">
+                        彩票种类：<select id="summary_input_lottery_type" data-item="true" play-prefix="summary_input_play_">
+                            <option value="cqssc">重庆时时彩</option>
+                            <option value="xjssc">新疆时时彩</option>
+                        </select>
+                    </div>
+
+                    <div class="line">
+                        查询日期：
+                        <input type="text" id="summary_input_start_date" value="2018-03-15" style="width:100px;" class="bootstrap-datepicker" data-item="true" />
+                        至
+                        <input type="text" id="summary_input_end_date" value="2018-03-21" style="width:100px;" class="bootstrap-datepicker" data-item="true" />
+                    </div>
+
+                    <div class="line">
+                      <input type="button" value="开始分析" onclick="window.external.GenerateSummaryReport();" />
+                    </div>
+                </div>
+              </td>
+              <td valign="top">
+                <div class="block">
+                    <div class="line">
+                        测试方法：<select id="summary_input_test_method" data-item="true">
+                            <option value="zhuigen">追跟上一式</option>
+                            <option value="dingshi">定式珠路</option>
+                            <option value="jiaocha">交叉珠路</option>
+                        </select>
+                    </div>
+
+                    <div class="line">
+                        彩票玩法：
+                        <label>
+                            <input type="checkbox" value="1" id="summary_input_play_danshuang" checked="checked" data-item="true" />
+                            单双
+                        </label>
+                        &nbsp;&nbsp;
+                        <label>
+                            <input type="checkbox" value="1" id="summary_input_play_daxiao" checked="checked" data-item="true" />
+                            大小
+                        </label>
+                        &nbsp;&nbsp;
+                        <label>
+                            <input type="checkbox" value="1" id="summary_input_play_zhds" data-item="true" />
+                            总和单双
+                        </label>
+                        &nbsp;&nbsp;
+                        <label>
+                            <input type="checkbox" value="1" id="summary_input_play_zhdx" data-item="true" />
+                            总和大小
+                        </label>
+                        &nbsp;&nbsp;
+                        <label>
+                            <input type="checkbox" value="1" id="summary_input_play_longhu" data-item="true" />
+                            龙虎
+                        </label>
+                    </div>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div><!-- /#summary-input -->
+
+        <div class="box result-box" id="summary-result">
+          <table cellpadding="0" cellspacing="0" border="0" align="center">
+            <thead>
+              <tr>
+                <th style="width: 180px">日期</th>
+                <th>单双</th>
+                <th>大小</th>
+                <th>龙虎</th>
+                <th>冠亚和大小</th>
+                <th>冠亚和单双</th>
+                <th>小计</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2018-03-01</td>
+                <td>10</td>
+                <td>20</td>
+                <td>30</td>
+                <td>40</td>
+                <td>40</td>
+                <td>100</td>
+              </tr>
+              <tr>
+                <td>2018-03-02</td>
+                <td>10</td>
+                <td>20</td>
+                <td>30</td>
+                <td>40</td>
+                <td>40</td>
+                <td>100</td>
+              </tr>
+              <tr>
+                <td>2018-03-03</td>
+                <td>10</td>
+                <td>20</td>
+                <td>30</td>
+                <td>40</td>
+                <td>40</td>
+                <td>100</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td>合计</td>
+                <td>30</td>
+                <td>60</td>
+                <td>90</td>
+                <td>120</td>
+                <td>120</td>
+                <td>300</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div><!-- /#summary-result -->
+    </div><!-- /#summary-page -->
+
+    <div id="continuous-page" class="page-content">
+        <div class="box input-box" id="continuous-input">
+          <table cellpadding="0" cellspacing="0" border="0" align="center">
+            <tr>
+              <td colspan="2">
+                <div class="box-title">连式统计</div>
+              </td>
+            </tr>
+            <tr>
+              <td valign="top">
+                <div class="block">
+                    <div class="line">
+                        彩票种类：<select id="continuous_input_lottery_type" data-item="true" play-prefix="continuous_input_play_">
+                            <option value="cqssc">重庆时时彩</option>
+                            <option value="xjssc">新疆时时彩</option>
+                        </select>
+                    </div>
+
+                    <div class="line">
+                        查询日期：
+                        <input type="text" id="continuous_input_start_date" value="2018-03-15" style="width:100px;" class="bootstrap-datepicker" data-item="true" />
+                        至
+                        <input type="text" id="continuous_input_end_date" value="2018-03-21" style="width:100px;"class="bootstrap-datepicker" data-item="true" />
+                    </div>
+
+                    <div class="line">
+                      <input type="button" value="开始分析" onclick="window.external.GenerateContinuousReport();" />
+                    </div>
+                </div>
+              </td>
+              <td valign="top">
+                <div class="block">
+                    <div class="line">
+                        测试方法：<select id="continuous_input_test_method" data-item="true">
+                            <option value="zhuigen">追跟上一式</option>
+                            <option value="dingshi">定式珠路</option>
+                            <option value="jiaocha">交叉珠路</option>
+                        </select>
+                    </div>
+
+                    <div class="line">
+                        彩票玩法：
+                        <label>
+                            <input type="checkbox" value="1" id="continuous_input_play_danshuang" checked="checked" data-item="true" />
+                            单双
+                        </label>
+                        &nbsp;&nbsp;
+                        <label>
+                            <input type="checkbox" value="1" id="continuous_input_play_daxiao" checked="checked" data-item="true" />
+                            大小
+                        </label>
+                        &nbsp;&nbsp;
+                        <label>
+                            <input type="checkbox" value="1" id="continuous_input_play_zhds" data-item="true" />
+                            总和单双
+                        </label>
+                        &nbsp;&nbsp;
+                        <label>
+                            <input type="checkbox" value="1" id="continuous_input_play_zhdx" data-item="true" />
+                            总和大小
+                        </label>
+                        &nbsp;&nbsp;
+                        <label>
+                            <input type="checkbox" value="1" id="continuous_input_play_longhu" data-item="true" />
+                            龙虎
+                        </label>
+                    </div>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div><!-- /#continuous-input -->
+
+        <div class="box result-box" id="continuous-result">
+          <table cellpadding="0" cellspacing="0" border="0" align="center">
+            <thead>
+              <tr>
+                <th style="width: 180px" rowspan="2">日期</th>
+                <th colspan="5">大小</th>
+                <th colspan="5">单双</th>
+                <th colspan="5">总和大小</th>
+                <th colspan="5">总和单双</th>
+              </tr>
+              <tr>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>6</th>
+                <th>7+</th>
+
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>6</th>
+                <th>7+</th>
+
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>6</th>
+                <th>7+</th>
+
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>6</th>
+                <th>7+</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2018-03-01</td>
+
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+              </tr>
+              <tr>
+                <td>2018-03-02</td>
+
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td>合计</td>
+
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div><!-- /#continuous-result -->
+    </div><!-- /#continuous-page -->
+
+
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-datepicker/1.6.4/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+    <script src="https://cdn.bootcss.com/tooltipster/3.3.0/js/jquery.tooltipster.min.js"></script>
+
+    <script type="text/javascript">
+
+    function switchNumberView(number_type) {
+        $('#dayview-result a.switch-number-button').each(function () {
+            if ($(this).attr('number-type') == number_type) {
+                $(this).addClass('active');
+            } else {
+                $(this).removeClass('active');
+            }
+        });
+        $('#dayview-result div.kaijiang').each(function () {
+            if ($(this).hasClass(number_type)) {
+                $(this).removeClass('hidden').addClass('show');
+            } else {
+                $(this).removeClass('show').addClass('hidden');
+            }
+        });
+        $('#last_number_type').val(number_type);
+    }
+
+    function switchPageView(page_id) {
+        $('a.switch-page-button').each(function () {
+            if ($(this).attr('target-page') == page_id) {
+                $(this).addClass('active');
+            } else {
+                $(this).removeClass('active');
+            }
+        });
+        $('div.page-content').each(function () {
+            if ($(this).attr('id') == page_id) {
+                $(this).removeClass('hidden').addClass('show').addClass('active');
+            } else {
+                $(this).removeClass('active').removeClass('show').addClass('hidden');
+            }
+        });
+    }
+
+    $(function() {
+
+        $('.bootstrap-datepicker').datepicker({
+            language: "zh-CN",
+            format: "yyyy-mm-dd",
+            autoclose: true
+        });
+
+        //$("[data-toggle='tooltip']").tooltip();
+
+
+        //-----------------------------------------------------------------------------------
+        //页面切换处理
+
+        $('a.switch-page-button').click(function() {
+            switchPageView($(this).attr('target-page'));
+        });
+
+        switchPageView('dayview-page');
+
+
+        //-----------------------------------------------------------------------------------
+        //号码显示切换处理
+
+        $('a.switch-number-button').click(function() {
+            switchNumberView($(this).attr('number-type'));
+        });
+
+        //switchNumberView('haoma');
+
+
+        //-----------------------------------------------------------------------------------
+        //彩票种类选择后设置彩票玩法
+
+        $('#dayview_input_lottery_type').change(function() {
+            changeLotteryType($(this).val(), $(this).attr('play-prefix'));
+        });
+        $('#summary_input_lottery_type').change(function() {
+            changeLotteryType($(this).val(), $(this).attr('play-prefix'));
+        });
+        $('#continuous_input_lottery_type').change(function() {
+            changeLotteryType($(this).val(), $(this).attr('play-prefix'));
+        });
+
+        function changeLotteryType(lotteryType, playPrefix) {
+            switch (lotteryType) {
+                case 'cqssc':
+                    $('#' + playPrefix + 'daxiao').prop('checked', true);
+                    $('#' + playPrefix + 'danshuang').prop('checked', true);
+                    $('#' + playPrefix + 'zhdx').prop('checked', true);
+                    $('#' + playPrefix + 'zhds').prop('checked', true);
+                    $('#' + playPrefix + 'longhu').prop('checked', false);
+                    break;
+                case 'xjssc':
+                    $('#' + playPrefix + 'daxiao').prop('checked', false);
+                    $('#' + playPrefix + 'danshuang').prop('checked', false);
+                    $('#' + playPrefix + 'zhdx').prop('checked', false);
+                    $('#' + playPrefix + 'zhds').prop('checked', false);
+                    $('#' + playPrefix + 'longhu').prop('checked', true);
+                    break;
+            }
+        }
+
+
+    });
+
+    </script>
+  </body>
+</html>
